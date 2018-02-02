@@ -34,30 +34,21 @@ class BooksApp extends Component {
   /**
    * @description: Modifica o estado da aplicação com base no item selecionado
    * @param: select > options = target.value (currentlyReading, currentlyReading ou read) e book
-   * @returns: setState do book
+   * @returns: setState do book e update no servidor
   */
   updateBookStatus(target, book) {
-    this.setState(function () {
-      switch (target.value) {
-        case 'currentlyReading':
-          book.shelf = 'currentlyReading'
-          BooksAPI.update(book, 'currentlyReading')
-          break
-        case 'wantToRead':
-          book.shelf = 'wantToRead'
-          BooksAPI.update(book, 'wantToRead')
-          break
-        case 'read':
-          book.shelf = 'read'
-          BooksAPI.update(book, 'read')
-          break
-        case 'none':
-          break
-        default:
-          break
-      }
-    });
+    if(this.state.books.includes(book)){
+      this.setState(function () {
+        book.shelf = target.value
+      })
+    } else {
+      this.setState(state => ({
+        books: state.books.concat(book)
+      }))
+    }
+    BooksAPI.update(book, target.value)
   }
+
 
   render() {
     const { books } = this.state
